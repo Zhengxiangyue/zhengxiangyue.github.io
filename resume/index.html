@@ -1,18 +1,51 @@
-<style>
-    body {
-        margin: 0;
-    }
-</style>
-
 <head>
+    <meta charset="utf-8">
+    <title>iview example</title>
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+    <script src="https://unpkg.com/vue-cookies@1.5.7/vue-cookies.js"></script>
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127215406-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
         gtag('js', new Date());
         gtag('config', 'UA-127215406-1');
     </script>
 </head>
+<body>
+<div id="app">
+    <embed src="../zhengxiangyueResume.pdf" type='application/pdf' width="100%" height="100%">
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        mounted() {
 
-<embed src="../zhengxiangyueResume.pdf" type='application/pdf' width="100%" height="100%">
+            let __utma = this.$cookies.get('__utma');
+
+            if (__utma === null) {
+                this.$Notice.open({
+                    title: 'Thanks for viewing Xiangyue\'s resume',
+                    desc: 'The content includes links, click to get more details.',
+                    duration: 10,
+                });
+            }
+        }
+    });
+</script>
+<style>
+    body {
+        margin: 0;
+    }
+    .ivu-notice {
+        width: 390px;
+    }
+</style>
+</body>
