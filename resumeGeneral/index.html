@@ -5,7 +5,8 @@
     <script type="text/javascript" src="/static/vue.min.js"></script>
     <script type="text/javascript" src="/static/iview.min.js"></script>
     <script src="/static/vue-cookies.js"></script>
-
+    <script src="/static/jquery-min.js"></script>
+    
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127215406-1"></script>
     <script>
@@ -39,6 +40,13 @@
                     duration: 8,
                 });
             }
+
+            $.ajax({
+                url: 'http://ec2-54-172-123-139.compute-1.amazonaws.com/interface.php',
+                success: function(result){
+                    console.log(result);
+                }
+            });
         }
     });
 </script>
