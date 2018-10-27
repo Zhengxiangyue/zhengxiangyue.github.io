@@ -1,3 +1,8 @@
+<style>
+	h1 {
+        display: none;
+	}
+</style>
 ## 65. Valid Number
 
 > Validate if a given string can be interpreted as a decimal number.
@@ -29,7 +34,7 @@
 
 ### Intuition
 
-The valid number is orderly consist of:
+The valid number orderly consists of:
 
 - 0 or more spaces `\s*`
 - 0 or 1 of "-" or "+" `[-+]?`
@@ -38,5 +43,54 @@ The valid number is orderly consist of:
   - 1 or more digits + "." + 1 or more digits `\d+.\d+`
 - 0 or 1 of ("e" + 0 or 1 of "-" or "+" +  1 or more digits) `e[-+]?\d+`
 
-`^\s*[-+]?(\d+|\d+.\d+)(e[-+]?\d+)+$`
+`^\s*[-+]?(\d+|\d+.\d+)(e[-+]?\d+)?$`
 
+### Some Changes
+
+Actually, the OJ treate ".3" or "1." as valid numbers too, but "." Is not valid
+
+ so
+
+The valid number orderly consists of:
+
+- 0 or more spaces `\s*`
+- 0 or 1 of "-" or "+" `[-+]?`
+- Some digits from eighter:
+  - <span style="color:red">0</span> or more digits `\d+`
+  - <span style="color:red">0</span> or more digits + "." + 1 or more digits `\d+.\d+`
+  - 1 or more digits + "." + <span style="color:red">0</span>  or more digits `\d+.\d+`
+- 0 or 1 of ("e" + 0 or 1 of "-" or "+" +  1 or more digits) `e[-+]?\d+`
+
+`^\s*[-+]?(?:\d+|\d*\.\d+|\d+\.\d*)(?:e[-+]?\d+)?\s*$`
+
+
+
+## 564. Find the Closest Palindrome
+
+> Given an integer n, find the closest integer (not including itself), which is a palindrome.
+>
+> The 'closest' is defined as absolute difference minimized between two integers.
+>
+> **Example 1:**
+>
+> ```
+> Input: "123"
+> Output: "121"
+> ```
+>
+>
+>
+> **Note:**
+>
+> 1. The input **n** is a positive integer represented by string, whose length will not exceed 18.
+> 2. If there is a tie, return the smaller one as answer.
+
+- Get first half of the number "L"
+  - if the number is of size 6, get leading 3 numbers 123456 => 123
+  - if the number is if size 9, get leading 5 numbers 123456789 => 12345
+
+- The result must be one of the number leading by either
+  - L
+  - L+1
+  - L-1
+- We have to 
