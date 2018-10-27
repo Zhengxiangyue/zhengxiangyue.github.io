@@ -1,8 +1,3 @@
-<style>
-	h1 {
-        display: none;
-	}
-</style>
 ## 65. Valid Number
 
 > Validate if a given string can be interpreted as a decimal number.
@@ -86,11 +81,64 @@ The valid number orderly consists of:
 > 2. If there is a tie, return the smaller one as answer.
 
 - Get first half of the number "L"
-  - if the number is of size 6, get leading 3 numbers 123456 => 123
-  - if the number is if size 9, get leading 5 numbers 123456789 => 12345
+- Calculate the origin, +1, and -1, and the corresponding palindrome
+  - 12345 for instance, first half 123, origin: 12321, +1: 12421, -1:12221
+  - 1000 for instance , first half 10, origin: 1001, +1: 1111, -1: 999
+- The result must be one of them
 
-- The result must be one of the number leading by either
-  - L
-  - L+1
-  - L-1
-- We have to 
+
+
+The first half is easy to calculate, use this function to get the palindrome where the second parameter is how many number we need to add to the back
+
+```c++
+    string getPalingrome(string s, int l) {
+        
+        if (s == "0") 
+            return "9";
+        
+        if (l > s.size()) 
+            return s + string(l, '9');
+        
+        string post_half(s.begin(), s.begin() + l);
+        reverse(post_half.begin(), post_half.end());
+        return s + post_half;
+    }
+```
+
+Special conditions:
+
+- If the number n <= 10, return n-1
+- If the pre half is 0, return 9. When n like 11, 12, 13 and pre half could be 1, 0, 2 (if s == "0")
+- If the length of the half decrease, we get some number like 10000, return 9999 (if l > s.size())
+
+
+
+## 340. Longest Substring with At Most K Distinct Characters
+
+> Given a string, find the length of the longest substring T that contains at most *k* distinct characters.
+>
+> **Example 1:**
+>
+> ```
+> Input: s = "eceba", k = 2
+> Output: 3
+> Explanation: T is "ece" which its length is 3.
+> ```
+>
+> **Example 2:**
+>
+> ```
+> Input: s = "aa", k = 1
+> Output: 2
+> Explanation: T is "aa" which its length is 2.
+> ```
+>
+>
+
+Two pointers. At the beginning, left and right contain the first k characters, each time:
+
+- Move the right pointer to the right by one position
+  - If the range contains less or equal than k characters, continue, since it's a valid range
+  - If not, move left pointer to right **until** the range contains k characters
+
+In this process, use a hash map to record the occurrence of each character. Also update max length of the range
