@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- including ECharts file -->
+    <script src="echarts.min.js"></script>
+</head>
+<body></body>
+
+<script type="text/javascript">
+
+    let all_data = {
+        'workClass': [
+            ['Never-worked', 'Without-pay', '?', 'Private', 'State-gov', 'Self-emp-not-inc', 'Local-gov', 'Federal-gov', 'Self-emp-inc'],
+            [0, 0, 191, 4963, 353, 724, 617, 371, 622],
+            [7, 14, 1645, 17733, 945, 1817, 1476, 589, 494],
+            ['0.000', '0.000', '0.116', '0.280', '0.374', '0.398', '0.418', '0.630', '1.259']
+        ],
+        'education': [
+            ['Preschool', '1st-4th', '5th-6th', '11th', '9th', '7th-8th', '10th', '12th', 'HS-grad', 'Some-college', 'Assoc-acdm', 'Assoc-voc', 'Bachelors', 'Masters', 'Prof-school', 'Doctorate'],
+            [0, 6, 16, 60, 27, 40, 62, 33, 1675, 1387, 265, 361, 2221, 959, 423, 306],
+            [51, 162, 317, 1115, 487, 606, 871, 400, 8826, 5904, 802, 1021, 3134, 764, 153, 107],
+            ['0.000', '0.037', '0.050', '0.054', '0.055', '0.066', '0.071', '0.083', '0.190', '0.235', '0.330', '0.354', '0.709', '1.255', '2.765', '2.860']
+        ],
+        'martialStatus': [
+            ['Never-married', 'Separated', 'Married-spouse-absent', 'Widowed', 'Divorced', 'Married-AF-spouse', 'Married-civ-spouse'],
+            [491, 66, 34, 85, 463, 10, 6692],
+            [10192, 959, 384, 908, 3980, 13, 8284],
+            ['0.048', '0.069', '0.089', '0.094', '0.116', '0.769', '0.808']
+        ],
+        'occupation': [
+            ['Priv-house-serv', 'Other-service', 'Handlers-cleaners', '?', 'Armed-Forces', 'Farming-fishing', 'Machine-op-inspct', 'Adm-clerical', 'Transport-moving', 'Craft-repair', 'Sales', 'Tech-support', 'Protective-serv', 'Prof-specialty', 'Exec-managerial'],
+            [1, 137, 86, 191, 1, 115, 250, 507, 320, 929, 983, 283, 211, 1859, 1968],
+            [148, 3158, 1284, 1652, 8, 879, 1752, 3263, 1277, 3170, 2667, 645, 438, 2281, 2098],
+            ['0.007', '0.043', '0.067', '0.116', '0.125', '0.131', '0.143', '0.155', '0.251', '0.293', '0.369', '0.439', '0.482', '0.815', '0.938']
+        ],
+        'relationship': [
+            ['Own-child', 'Other-relative', 'Unmarried', 'Not-in-family', 'Husband', 'Wife'],
+            [67, 37, 218, 856, 5918, 745],
+            [5001, 944, 3228, 7449, 7275, 823],
+            ['0.013', '0.039', '0.068', '0.115', '0.813', '0.905']
+        ],
+        'race': [
+            ['Other', 'Amer-Indian-Eskimo', 'Black', 'White', 'Asian-Pac-Islander'],
+            [25, 36, 387, 7117, 276],
+            [246, 275, 2737, 20699, 763],
+            ['0.102', '0.131', '0.141', '0.344', '0.362']
+        ],
+        'sex': [
+            ['Female', 'Male'],
+            [1179, 6662],
+            [9592, 15128],
+            ['0.123', '0.440']
+        ],
+        'nativeCountry': [
+            ['Outlying-US(Guam-USVI-etc)', 'Holand-Netherlands', 'Dominican-Republic', 'Columbia', 'Guatemala', 'Mexico', 'Nicaragua', 'Peru', 'Vietnam', 'Honduras', 'El-Salvador', 'Haiti', 'Puerto-Rico', 'Trinadad&Tobago', 'Portugal', 'Laos', 'Jamaica', 'Ecuador', 'Thailand', 'South', 'Poland', 'Ireland', 'Hungary', 'United-States', 'Scotland', '?', 'Cuba', 'China', 'Greece', 'Hong', 'Philippines', 'Germany', 'Canada', 'England', 'Italy', 'Cambodia', 'Yugoslavia', 'Japan', 'Taiwan', 'India', 'France', 'Iran'],
+            [0, 0, 2, 2, 3, 33, 2, 2, 5, 1, 9, 4, 12, 2, 4, 2, 10, 4, 3, 16, 12, 5, 3, 7171, 3, 146, 25, 20, 8, 6, 61, 44, 39, 30, 25, 7, 6, 24, 20, 40, 12, 18],
+            [14, 1, 68, 57, 61, 610, 32, 29, 62, 12, 97, 40, 102, 17, 33, 16, 71, 24, 15, 64, 48, 19, 10, 21999, 9, 437, 70, 55, 21, 14, 137, 93, 82, 60, 48, 12, 10, 38, 31, 60, 17, 25],
+            ['0.000', '0.000', '0.029', '0.035', '0.049', '0.054', '0.062', '0.069', '0.081', '0.083', '0.093', '0.100', '0.118', '0.118', '0.121', '0.125', '0.141', '0.167', '0.200', '0.250', '0.250', '0.263', '0.300', '0.326', '0.333', '0.334', '0.357', '0.364', '0.381', '0.429', '0.445', '0.473', '0.476', '0.500', '0.521', '0.583', '0.600', '0.632', '0.645', '0.667', '0.706', '0.720']
+        ]
+    };
+    let labelOption = {
+        normal: {
+            show: true,
+            formatter: '{c}',
+            fontSize: 12,
+            rich: {
+                name: {
+                    textBorderColor: '#fff'
+                }
+            }
+        }
+    };
+
+    let graph_list = [];
+    let ratio_graph_list = [];
+
+    for (let key in all_data) {
+        // add an element to the dom
+        document.body.innerHTML +=
+            '<div id="' + key + '" style="width:100%;height:400px;"></div>' +
+            '<div id="' + key + 'Ratio" style="width: 100%;height:400px;"></div>';
+
+    }
+    for (let key in all_data) {
+        graph_list.push(echarts.init(document.getElementById(key)));
+        ratio_graph_list.push(echarts.init(document.getElementById( key + 'Ratio')));
+
+        let itemOption = {
+                title: {
+                    text: key,
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['Number of > 50K', 'Number of <= 50K']
+                },
+
+                calculable: true,
+
+                xAxis: [
+                    {
+                        type: 'category',
+                        barGap: 20,
+                        axisTick: {show: true},
+                        data:  all_data[key][0],
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Number of > 50K',
+                        type: 'bar',
+                        barGap: 0,
+                        width: 10,
+                        label: labelOption,
+                        data: all_data[key][1]
+
+                    },
+                    {
+                        name: 'Number of <= 50K',
+                        type: 'bar',
+                        label: labelOption,
+                        data: all_data[key][2]
+
+                    },
+
+                ]
+            };
+        let itemOptionRatio = {
+            title: {
+                text: key + ' ratio',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['Number of > 50k / Number of <= 50k']
+            },
+
+            calculable: true,
+
+            xAxis: [
+                {
+                    type: 'category',
+                    barGap: 20,
+                    axisTick: {show: true},
+                    data: all_data[key][0]
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: 'Number of > 50k / Number of <= 50k',
+                    type: 'line',
+                    label: labelOption,
+                    data: all_data[key][3]
+                },
+
+            ]
+        };
+
+        graph_list[graph_list.length - 1].setOption(itemOption);
+        ratio_graph_list[ratio_graph_list.length - 1].setOption(itemOptionRatio);
+
+    }
+
+    // // based on prepared DOM, initialize echarts instance
+    // let workClass =
+    // let workClassRatio = echarts.init(document.getElementById('workClassRatio'));
+    //
+    // let education = echarts.init(document.getElementById('education'));
+    // let educationRatio = echarts.init(document.getElementById('educationRatio'));
+    //
+    // let maritalStatus = echarts.init(document.getElementById('maritalStatus'));
+    // let maritalStatusRatio = echarts.init(document.getElementById('maritalStatusRatio'));
+    //
+    // let occupation = echarts.init(document.getElementById('occupation'));
+    // let occupationRatio = echarts.init(document.getElementById('occupationRatio'));
+    //
+    // let relationship = echarts.init(document.getElementById('occupation'));
+    // let relationshipRatio = echarts.init(document.getElementById('occupationRatio'));
+    //
+    // let race = echarts.init(document.getElementById('occupation'));
+    // let raceRatio = echarts.init(document.getElementById('occupationRatio'));
+    //
+    // let sex = echarts.init(document.getElementById('occupation'));
+    // let sexRatio = echarts.init(document.getElementById('occupationRatio'));
+    //
+    // let nativeCountry = echarts.init(document.getElementById('occupation'));
+    // let nativeCountryRatio = echarts.init(document.getElementById('occupationRatio'));
+    //
+
+    //
+    // let work_class_option = {
+    //     title: {
+    //         text: 'Work class',
+    //     },
+    //     color: ['#339900', '#660033'],
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['> 50K', '<= 50K', 'Ratio']
+    //     },
+    //     calculable: true,
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Never-worked', 'Without-pay', '?', 'Private', 'State-gov', 'Self-emp-not-inc', 'Local-gov', 'Federal-gov', 'Self-emp-inc']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '> 50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             label: labelOption,
+    //             data: [0, 0, 191, 4963, 353, 724, 617, 371, 622]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [7, 14, 1645, 17733, 945, 1817, 1476, 589, 494]
+    //         },
+    //     ]
+    // };
+    // let work_class_ratio_option = {
+    //     title: {
+    //         text: 'Work class',
+    //     },
+    //     color: ['#339900', '#660033'],
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['> 50K', '<= 50K', 'Ratio']
+    //     },
+    //     calculable: true,
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Never-worked', 'Without-pay', '?', 'Private', 'State-gov', 'Self-emp-not-inc', 'Local-gov', 'Federal-gov', 'Self-emp-inc']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: 'Ratio',
+    //             type: 'line',
+    //             label: labelOption,
+    //             data: [0.0, 0.0, 0.11610942249240122, 0.27987368183612477, 0.37354497354497357, 0.3984589983489268, 0.4180216802168022, 0.629881154499151, 1.2591093117408907]
+    //         },
+    //     ]
+    // };
+    //
+    // let education_option = {
+    //     title: {
+    //         text: 'Education',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Preschool', '1st-4th', '5th-6th', '11th', '9th', '7th-8th', '10th', '12th', 'HS-grad', 'Some-college', 'Assoc-acdm', 'Assoc-voc', 'Bachelors', 'Masters', 'Prof-school', 'Doctorate']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             label: labelOption,
+    //             data: [0, 6, 16, 60, 27, 40, 62, 33, 1675, 1387, 265, 361, 2221, 959, 423, 306]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [51, 162, 317, 1115, 487, 606, 871, 400, 8826, 5904, 802, 1021, 3134, 764, 153, 107]
+    //         },
+    //
+    //     ]
+    // };
+    // let education_ratio_option = {
+    //     title: {
+    //         text: 'Education',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['larger : smaller(equal)']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Preschool', '1st-4th', '5th-6th', '7th-8th', '9th', '10th', '11th', '12th', 'HS-grad', 'Prof-school', 'Some-college', 'Bachelors', 'Masters', 'Assoc-voc', 'Assoc-acdm', 'Doctorate']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: 'larger : smaller(equal)',
+    //             type: 'line',
+    //             label: labelOption,
+    //             data: [0.0, 0.037037037037037035, 0.050473186119873815, 0.053811659192825115, 0.055441478439425054, 0.066006600660066, 0.0711825487944891, 0.0825, 0.18978019487876727, 0.23492547425474256, 0.33042394014962595, 0.3535749265426053, 0.7086790044671346, 1.2552356020942408, 2.764705882352941, 2.8598130841121496]
+    //         },
+    //
+    //     ]
+    // };
+    //
+    // let marital_status_option = {
+    //     title: {
+    //         text: 'Martial status',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Separated', 'Never-married', 'Widowed', 'Divorced', 'Married-AF-spouse', 'Married-civ-spouse', 'Married-spouse-absent']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {
+    //             // 'Separated': {'larger': 66, 'smaller': 959},
+    //             // 'Never-married': {'larger': 491, 'smaller': 10192},
+    //             // 'Widowed': {'larger': 85, 'smaller': 908},
+    //             // 'Divorced': {'larger': 463, 'smaller': 3980},
+    //             // 'Married-AF-spouse': {'larger': 10, 'smaller': 13},
+    //             // 'Married-civ-spouse': {'larger': 6692, 'smaller': 8284},
+    //             // 'Married-spouse-absent': {'larger': 34, 'smaller': 384}}
+    //             data: [66, 491, 85, 463, 10, 6692, 34]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [959, 10192, 908, 3980, 13, 8284, 384]
+    //         },
+    //
+    //     ]
+    // };
+    // let marital_status_ratio_option = {
+    //     title: {
+    //         text: 'Martial status',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Separated', 'Never-married', 'Widowed', 'Divorced', 'Married-AF-spouse', 'Married-civ-spouse', 'Married-spouse-absent']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {
+    //             // 'Separated': {'larger': 66, 'smaller': 959},
+    //             // 'Never-married': {'larger': 491, 'smaller': 10192},
+    //             // 'Widowed': {'larger': 85, 'smaller': 908},
+    //             // 'Divorced': {'larger': 463, 'smaller': 3980},
+    //             // 'Married-AF-spouse': {'larger': 10, 'smaller': 13},
+    //             // 'Married-civ-spouse': {'larger': 6692, 'smaller': 8284},
+    //             // 'Married-spouse-absent': {'larger': 34, 'smaller': 384}}
+    //             data: [66, 491, 85, 463, 10, 6692, 34]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [959, 10192, 908, 3980, 13, 8284, 384]
+    //         },
+    //
+    //     ]
+    // };
+    //
+    // let occupation_option = {
+    //     title: {
+    //         text: 'Occupation',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Farming-fishing', 'Armed-Forces', 'Craft-repair', 'Other-service', 'Transport-moving', 'Prof-specialty', 'Sales', 'Exec-managerial', 'Handlers-cleaners', '?', 'Adm-clerical', 'Protective-serv', 'Tech-support', 'Priv-house-serv', 'Machine-op-inspct']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {'Farming-fishing': {'larger': 115, 'smaller': 879},
+    //             // 'Armed-Forces': {'larger': 1, 'smaller': 8},
+    //             // 'Craft-repair': {'larger': 929, 'smaller': 3170},
+    //             // 'Other-service': {'larger': 137, 'smaller': 3158},
+    //             // 'Transport-moving': {'larger': 320, 'smaller': 1277},
+    //             // 'Prof-specialty': {'larger': 1859, 'smaller': 2281},
+    //             // 'Sales': {'larger': 983, 'smaller': 2667},
+    //             // 'Exec-managerial': {'larger': 1968, 'smaller': 2098},
+    //             // 'Handlers-cleaners': {'larger': 86, 'smaller': 1284},
+    //             // '?': {'larger': 191, 'smaller': 1652},
+    //             // 'Adm-clerical': {'larger': 507, 'smaller': 3263},
+    //             // 'Protective-serv': {'larger': 211, 'smaller': 438},
+    //             // 'Tech-support': {'larger': 283, 'smaller': 645},
+    //             // 'Priv-house-serv': {'larger': 1, 'smaller': 148},
+    //             // 'Machine-op-inspct': {'larger': 250, 'smaller': 1752}}
+    //             data: [115, 1, 929, 137, 320, 1859, 983, 1968, 86, 191, 507, 211, 283, 1, 250]
+    //
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [879, 8, 3170, 3158, 1277, 2281, 2667, 2098, 1284, 1652, 3263, 438, 645, 148, 1752]
+    //
+    //         },
+    //
+    //     ]
+    // };
+    // let occupation_ratio_option = {
+    //     title: {
+    //         text: 'Occupation',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Farming-fishing', 'Armed-Forces', 'Craft-repair', 'Other-service', 'Transport-moving', 'Prof-specialty', 'Sales', 'Exec-managerial', 'Handlers-cleaners', '?', 'Adm-clerical', 'Protective-serv', 'Tech-support', 'Priv-house-serv', 'Machine-op-inspct']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {'Farming-fishing': {'larger': 115, 'smaller': 879},
+    //             // 'Armed-Forces': {'larger': 1, 'smaller': 8},
+    //             // 'Craft-repair': {'larger': 929, 'smaller': 3170},
+    //             // 'Other-service': {'larger': 137, 'smaller': 3158},
+    //             // 'Transport-moving': {'larger': 320, 'smaller': 1277},
+    //             // 'Prof-specialty': {'larger': 1859, 'smaller': 2281},
+    //             // 'Sales': {'larger': 983, 'smaller': 2667},
+    //             // 'Exec-managerial': {'larger': 1968, 'smaller': 2098},
+    //             // 'Handlers-cleaners': {'larger': 86, 'smaller': 1284},
+    //             // '?': {'larger': 191, 'smaller': 1652},
+    //             // 'Adm-clerical': {'larger': 507, 'smaller': 3263},
+    //             // 'Protective-serv': {'larger': 211, 'smaller': 438},
+    //             // 'Tech-support': {'larger': 283, 'smaller': 645},
+    //             // 'Priv-house-serv': {'larger': 1, 'smaller': 148},
+    //             // 'Machine-op-inspct': {'larger': 250, 'smaller': 1752}}
+    //             data: [115, 1, 929, 137, 320, 1859, 983, 1968, 86, 191, 507, 211, 283, 1, 250]
+    //
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [879, 8, 3170, 3158, 1277, 2281, 2667, 2098, 1284, 1652, 3263, 438, 645, 148, 1752]
+    //
+    //         },
+    //
+    //     ]
+    // };
+    //
+    // let relationship_option = {
+    //     title: {
+    //         text: 'Work class',
+    //     },
+    //     color: ['#339900', '#660033'],
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['> 50K', '<= 50K', 'Ratio']
+    //     },
+    //     calculable: true,
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Never-worked', 'Without-pay', '?', 'Private', 'State-gov', 'Self-emp-not-inc', 'Local-gov', 'Federal-gov', 'Self-emp-inc']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '> 50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             label: labelOption,
+    //             data: [0, 0, 191, 4963, 353, 724, 617, 371, 622]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [7, 14, 1645, 17733, 945, 1817, 1476, 589, 494]
+    //         },
+    //     ]
+    // };
+    // let relationship_ratio_option = {
+    //     title: {
+    //         text: 'Work class',
+    //     },
+    //     color: ['#339900', '#660033'],
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['> 50K', '<= 50K', 'Ratio']
+    //     },
+    //     calculable: true,
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Never-worked', 'Without-pay', '?', 'Private', 'State-gov', 'Self-emp-not-inc', 'Local-gov', 'Federal-gov', 'Self-emp-inc']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: 'Ratio',
+    //             type: 'line',
+    //             label: labelOption,
+    //             data: [0.0, 0.0, 0.11610942249240122, 0.27987368183612477, 0.37354497354497357, 0.3984589983489268, 0.4180216802168022, 0.629881154499151, 1.2591093117408907]
+    //         },
+    //     ]
+    // };
+    //
+    // let race_option = {
+    //     title: {
+    //         text: 'Education',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Preschool', '1st-4th', '5th-6th', '11th', '9th', '7th-8th', '10th', '12th', 'HS-grad', 'Some-college', 'Assoc-acdm', 'Assoc-voc', 'Bachelors', 'Masters', 'Prof-school', 'Doctorate']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             label: labelOption,
+    //             data: [0, 6, 16, 60, 27, 40, 62, 33, 1675, 1387, 265, 361, 2221, 959, 423, 306]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [51, 162, 317, 1115, 487, 606, 871, 400, 8826, 5904, 802, 1021, 3134, 764, 153, 107]
+    //         },
+    //
+    //     ]
+    // };
+    // let race_ratio_option = {
+    //     title: {
+    //         text: 'Education',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['larger : smaller(equal)']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Preschool', '1st-4th', '5th-6th', '7th-8th', '9th', '10th', '11th', '12th', 'HS-grad', 'Prof-school', 'Some-college', 'Bachelors', 'Masters', 'Assoc-voc', 'Assoc-acdm', 'Doctorate']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: 'larger : smaller(equal)',
+    //             type: 'line',
+    //             label: labelOption,
+    //             data: [0.0, 0.037037037037037035, 0.050473186119873815, 0.053811659192825115, 0.055441478439425054, 0.066006600660066, 0.0711825487944891, 0.0825, 0.18978019487876727, 0.23492547425474256, 0.33042394014962595, 0.3535749265426053, 0.7086790044671346, 1.2552356020942408, 2.764705882352941, 2.8598130841121496]
+    //         },
+    //
+    //     ]
+    // };
+    //
+    // let sex_option = {
+    //     title: {
+    //         text: 'Martial status',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Separated', 'Never-married', 'Widowed', 'Divorced', 'Married-AF-spouse', 'Married-civ-spouse', 'Married-spouse-absent']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {
+    //             // 'Separated': {'larger': 66, 'smaller': 959},
+    //             // 'Never-married': {'larger': 491, 'smaller': 10192},
+    //             // 'Widowed': {'larger': 85, 'smaller': 908},
+    //             // 'Divorced': {'larger': 463, 'smaller': 3980},
+    //             // 'Married-AF-spouse': {'larger': 10, 'smaller': 13},
+    //             // 'Married-civ-spouse': {'larger': 6692, 'smaller': 8284},
+    //             // 'Married-spouse-absent': {'larger': 34, 'smaller': 384}}
+    //             data: [66, 491, 85, 463, 10, 6692, 34]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [959, 10192, 908, 3980, 13, 8284, 384]
+    //         },
+    //
+    //     ]
+    // };
+    // let sex_ratio_option = {
+    //     title: {
+    //         text: 'Martial status',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Separated', 'Never-married', 'Widowed', 'Divorced', 'Married-AF-spouse', 'Married-civ-spouse', 'Married-spouse-absent']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {
+    //             // 'Separated': {'larger': 66, 'smaller': 959},
+    //             // 'Never-married': {'larger': 491, 'smaller': 10192},
+    //             // 'Widowed': {'larger': 85, 'smaller': 908},
+    //             // 'Divorced': {'larger': 463, 'smaller': 3980},
+    //             // 'Married-AF-spouse': {'larger': 10, 'smaller': 13},
+    //             // 'Married-civ-spouse': {'larger': 6692, 'smaller': 8284},
+    //             // 'Married-spouse-absent': {'larger': 34, 'smaller': 384}}
+    //             data: [66, 491, 85, 463, 10, 6692, 34]
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [959, 10192, 908, 3980, 13, 8284, 384]
+    //         },
+    //
+    //     ]
+    // };
+    //
+    // let native_country_option = {
+    //     title: {
+    //         text: 'Occupation',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Farming-fishing', 'Armed-Forces', 'Craft-repair', 'Other-service', 'Transport-moving', 'Prof-specialty', 'Sales', 'Exec-managerial', 'Handlers-cleaners', '?', 'Adm-clerical', 'Protective-serv', 'Tech-support', 'Priv-house-serv', 'Machine-op-inspct']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {'Farming-fishing': {'larger': 115, 'smaller': 879},
+    //             // 'Armed-Forces': {'larger': 1, 'smaller': 8},
+    //             // 'Craft-repair': {'larger': 929, 'smaller': 3170},
+    //             // 'Other-service': {'larger': 137, 'smaller': 3158},
+    //             // 'Transport-moving': {'larger': 320, 'smaller': 1277},
+    //             // 'Prof-specialty': {'larger': 1859, 'smaller': 2281},
+    //             // 'Sales': {'larger': 983, 'smaller': 2667},
+    //             // 'Exec-managerial': {'larger': 1968, 'smaller': 2098},
+    //             // 'Handlers-cleaners': {'larger': 86, 'smaller': 1284},
+    //             // '?': {'larger': 191, 'smaller': 1652},
+    //             // 'Adm-clerical': {'larger': 507, 'smaller': 3263},
+    //             // 'Protective-serv': {'larger': 211, 'smaller': 438},
+    //             // 'Tech-support': {'larger': 283, 'smaller': 645},
+    //             // 'Priv-house-serv': {'larger': 1, 'smaller': 148},
+    //             // 'Machine-op-inspct': {'larger': 250, 'smaller': 1752}}
+    //             data: [115, 1, 929, 137, 320, 1859, 983, 1968, 86, 191, 507, 211, 283, 1, 250]
+    //
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [879, 8, 3170, 3158, 1277, 2281, 2667, 2098, 1284, 1652, 3263, 438, 645, 148, 1752]
+    //
+    //         },
+    //
+    //     ]
+    // };
+    // let native_country_ratio_option = {
+    //     title: {
+    //         text: 'Occupation',
+    //     },
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //             type: 'shadow'
+    //         }
+    //     },
+    //     legend: {
+    //         data: ['>  50K', '<= 50K']
+    //     },
+    //
+    //     calculable: true,
+    //
+    //     xAxis: [
+    //         {
+    //             type: 'category',
+    //             barGap: 20,
+    //             axisTick: {show: true},
+    //             data: ['Farming-fishing', 'Armed-Forces', 'Craft-repair', 'Other-service', 'Transport-moving', 'Prof-specialty', 'Sales', 'Exec-managerial', 'Handlers-cleaners', '?', 'Adm-clerical', 'Protective-serv', 'Tech-support', 'Priv-house-serv', 'Machine-op-inspct']
+    //         }
+    //     ],
+    //     yAxis: [
+    //         {
+    //             type: 'value'
+    //         }
+    //     ],
+    //     series: [
+    //         {
+    //             name: '>  50K',
+    //             type: 'bar',
+    //             barGap: 0,
+    //             width: 10,
+    //             label: labelOption,
+    //             // {'Farming-fishing': {'larger': 115, 'smaller': 879},
+    //             // 'Armed-Forces': {'larger': 1, 'smaller': 8},
+    //             // 'Craft-repair': {'larger': 929, 'smaller': 3170},
+    //             // 'Other-service': {'larger': 137, 'smaller': 3158},
+    //             // 'Transport-moving': {'larger': 320, 'smaller': 1277},
+    //             // 'Prof-specialty': {'larger': 1859, 'smaller': 2281},
+    //             // 'Sales': {'larger': 983, 'smaller': 2667},
+    //             // 'Exec-managerial': {'larger': 1968, 'smaller': 2098},
+    //             // 'Handlers-cleaners': {'larger': 86, 'smaller': 1284},
+    //             // '?': {'larger': 191, 'smaller': 1652},
+    //             // 'Adm-clerical': {'larger': 507, 'smaller': 3263},
+    //             // 'Protective-serv': {'larger': 211, 'smaller': 438},
+    //             // 'Tech-support': {'larger': 283, 'smaller': 645},
+    //             // 'Priv-house-serv': {'larger': 1, 'smaller': 148},
+    //             // 'Machine-op-inspct': {'larger': 250, 'smaller': 1752}}
+    //             data: [115, 1, 929, 137, 320, 1859, 983, 1968, 86, 191, 507, 211, 283, 1, 250]
+    //
+    //         },
+    //         {
+    //             name: '<= 50K',
+    //             type: 'bar',
+    //             label: labelOption,
+    //             data: [879, 8, 3170, 3158, 1277, 2281, 2667, 2098, 1284, 1652, 3263, 438, 645, 148, 1752]
+    //
+    //         },
+    //
+    //     ]
+    // };
+    //
+    // // use configuration item and data specified to show chart
+    // workClass.setOption(work_class_option);
+    // workClassRatio.setOption(work_class_ratio_option);
+    //
+    // education.setOption(education_option);
+    // educationRatio.setOption(education_ratio_option);
+    //
+    // maritalStatus.setOption(marital_status_option);
+    // maritalStatusRatio.setOption(marital_status_ratio_option);
+    //
+    // occupation.setOption(occupation_option);
+    // occupationRatio.setOption(occupation_ratio_option);
+    // use configuration item and data specified to show chart
+</script>
+</html>
