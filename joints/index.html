@@ -23,7 +23,7 @@
     </p>
     <div class="video-wrapper local">
         <video style="position: absolute" id="video" width="800px" height="500px" autoplay="" playsinline=""></video>
-        <canvas style="position: absolute" id="myCanvas" width="800px" height="500px"></canvas>
+        <!--<canvas style="position: absolute" id="myCanvas" width="800px" height="500px"></canvas>-->
     </div>
 </div>
 
@@ -53,7 +53,7 @@
     const outputStride = 16;
     const imageElement = document.getElementById('video');
 
-    const canvasElement = document.getElementById("myCanvas");
+    // const canvasElement = document.getElementById("myCanvas");
 
     function startWebcam() {
         if (navigator.getUserMedia) {
@@ -67,7 +67,7 @@
                     posenet.load().then(function (net) {
                         // posenet model loaded
                         networks = net;
-                        drawToCanvas();
+                        // drawToCanvas();
                     });
 
                 },
