@@ -1,210 +1,81 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Skeleton 3d reconstruction</title>
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/tfjs.js"></script>
-    <script src="js/posenet.js"></script>
+<html class="gr__webrtc_github_io"><head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="WebRTC code samples">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta itemprop="description" content="Client-side WebRTC code samples">
+    <meta itemprop="image" content="../../../images/webrtc-icon-192x192.png">
+    <meta itemprop="name" content="WebRTC code samples">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+    <base target="_blank">
+    <title>getUserMedia</title>
 </head>
-<body>
-<div id="wrapper" class="centered">
-    <p>
-        <button onclick="startWebcam();">Start WebCam</button>
-        <button onclick="stopWebcam();">Stop WebCam</button>
-    </p>
-    <div class="video-wrapper local">
-        <video style="position: absolute" id="video" autoplay="" playsinline="" width="800px" height="500px" controls></video>
-        <canvas style="position: absolute" id="myCanvas" width="800px" height="500px"></canvas>
-    </div>
+
+<body data-gr-c-s-loaded="true">
+
+<div id="container">
+    <video id="gum-local" autoplay="" playsinline=""></video>
+    <button id="showVideo">Open camera</button>
 </div>
 
 <script>
-    let localStream;
-    let networks;
-    let currentAnimationId;
+/*
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+ */
+ 'use strict';
 
-    const joints16 = [
-        "nose",
-        "leftShoulder",
-        "rightShoulder",
-        "leftElbow",
-        "rightElbow",
-        "leftWrist",
-        "rightWrist",
-        "leftHip",
-        "rightHip",
-        "leftKnee",
-        "rightKnee",
-        "leftAnkle",
-        "rightAnkle",
-    ];
+// Put variables in global scope to make them available to the browser console.
+const constraints = window.constraints = {
+  audio: false,
+  video: true
+};
 
-    const scaleFactor = 0.50;
-    const flipHorizontal = false;
-    const outputStride = 16;
-    const imageElement = document.getElementById('video');
+function handleSuccess(stream) {
+  const video = document.querySelector('video');
+  const videoTracks = stream.getVideoTracks();
+  console.log('Got stream with constraints:', constraints);
+  console.log(`Using video device: ${videoTracks[0].label}`);
+  window.stream = stream; // make variable available to browser console
+  video.srcObject = stream;
+}
 
-    const canvasElement = document.getElementById("myCanvas");
+function handleError(error) {
+  if (error.name === 'ConstraintNotSatisfiedError') {
+    let v = constraints.video;
+    errorMsg(`The resolution ${v.width.exact}x${v.height.exact} px is not supported by your device.`);
+  } else if (error.name === 'PermissionDeniedError') {
+    errorMsg('Permissions have not been granted to use your camera and ' +
+      'microphone, you need to allow the page access to your devices in ' +
+      'order for the demo to work.');
+  }
+  errorMsg(`getUserMedia error: ${error.name}`, error);
+}
 
-    function startWebcam() {
-        if (navigator.getUserMedia) {
-            navigator.getUserMedia(
-                {video: true, audio: true},
-                stream => {
-                    localStream = stream;
-                    $('.local video').attr('src', URL.createObjectURL(stream));
+function errorMsg(msg, error) {
+  const errorElement = document.querySelector('#errorMsg');
+  errorElement.innerHTML += `<p>${msg}</p>`;
+  if (typeof error !== 'undefined') {
+    console.error(error);
+  }
+}
 
-                    // load the posenet model
-                    posenet.load().then(function (net) {
-                        // posenet model loaded
-                        networks = net;
-                        drawToCanvas();
-                    });
+async function init(e) {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+    e.target.disabled = true;
+  } catch (e) {
+    handleError(e);
+  }
+}
 
-                },
-                error => {
-                    alert('error while accessing usermedia ' + error.toString());
-                }
-            );
-        } else {
-            console.log("getUserMedia not supported");
-        }
-    }
-
-    function stopWebcam() {
-        try {
-            localStream.stop();
-        } catch (e) {
-            console.log(e);
-            if (localStream) {
-                localStream.getTracks().forEach(function (track) {
-                    track.stop();
-                });
-            }
-        }
-        localStream = undefined;
-    }
-
-    /**
-     * _from
-     * @param _from
-     * @param _to
-     */
-    function drawLine(_from, _to) {
-        let ctx = canvasElement.getContext("2d");
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#00ff00';
-        ctx.moveTo(_from['position'].x, _from['position'].y);
-        ctx.lineTo(_to['position'].x, _to['position'].y);
-        ctx.stroke();
-    }
-
-    function drawToCanvas() {
-
-        if (!localStream) {
-            window.cancelAnimationFrame(currentAnimationId);
-            return;
-        }
-
-        networks.estimateSinglePose(imageElement, scaleFactor, flipHorizontal, outputStride).then(function (result) {
-
-            let joints = {};
-            for (let i = 0; i < result['keypoints'].length; ++i) {
-                joints[result['keypoints'][i]['part']] = result['keypoints'][i];
-            }
-
-            // calculate center shoulder
-            joints['centerShoulder'] = {
-                score: (joints['leftShoulder']['score'] + joints['rightShoulder']['score']) * 0.5,
-                part: 'centerShoulder',
-                position: {
-                    x: (joints['leftShoulder']['position'].x + joints['rightShoulder']['position'].x) * 0.5,
-                    y: (joints['leftShoulder']['position'].y + joints['rightShoulder']['position'].y) * 0.5
-                },
-            };
-            joints['centerHip'] = {
-                score: (joints['leftHip']['score'] + joints['rightHip']['score']) * 0.5,
-                part: 'centerHip',
-                position: {
-                    x: (joints['leftHip']['position'].x + joints['rightHip']['position'].x) * 0.5,
-                    y: (joints['leftHip']['position'].y + joints['rightHip']['position'].y) * 0.5,
-                },
-            };
-            joints['spine'] = {
-                score: (joints['centerHip']['score'] + joints['centerShoulder']['score']) * 0.5,
-                part: 'spine',
-                position: {
-                    x: (joints['centerHip']['position'].x + joints['centerShoulder']['position'].x) * 0.5,
-                    y: (joints['centerHip']['position'].y + joints['centerShoulder']['position'].y) * 0.5,
-                },
-            };
-
-            let ctx = canvasElement.getContext("2d");
-            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-            if (joints['nose']['score'] > 0.8 && joints['centerShoulder']['score'] > 0.8) {
-                drawLine(joints['nose'], joints['centerShoulder']);
-            }
-            if (joints['centerShoulder']['score'] > 0.8 && joints['centerHip']['score'] > 0.8) {
-                drawLine(joints['centerShoulder'], joints['centerHip']);
-            }
-            if (joints['leftShoulder']['score'] > 0.8 && joints['rightShoulder']['score'] > 0.8) {
-                drawLine(joints['leftShoulder'], joints['rightShoulder']);
-            }
-            if (joints['leftShoulder']['score'] > 0.8 && joints['leftElbow']['score'] > 0.8) {
-                drawLine(joints['leftShoulder'], joints['leftElbow']);
-            }
-            if (joints['leftElbow']['score'] > 0.8 && joints['leftWrist']['score'] > 0.8) {
-                drawLine(joints['leftElbow'], joints['leftWrist']);
-            }
-            if (joints['rightShoulder']['score'] > 0.8 && joints['rightElbow']['score'] > 0.8) {
-                drawLine(joints['rightShoulder'], joints['rightElbow']);
-            }
-            if (joints['rightElbow']['score'] > 0.8 && joints['rightWrist']['score'] > 0.8) {
-                drawLine(joints['rightElbow'], joints['rightWrist']);
-            }
-            if (joints['centerHip']['score'] > 0.8 && joints['leftHip']['score'] > 0.8) {
-                drawLine(joints['centerHip'], joints['leftHip']);
-            }
-            if (joints['leftHip']['score'] > 0.8 && joints['leftKnee']['score'] > 0.8) {
-                drawLine(joints['leftHip'], joints['leftKnee']);
-            }
-            if (joints['leftKnee']['score'] > 0.8 && joints['leftAnkle']['score'] > 0.8) {
-                drawLine(joints['leftKnee'], joints['leftAnkle']);
-            }
-            if (joints['centerHip']['score'] > 0.8 && joints['rightHip']['score'] > 0.8) {
-                drawLine(joints['centerHip'], joints['rightHip']);
-            }
-            if (joints['rightHip']['score'] > 0.8 && joints['rightKnee']['score'] > 0.8) {
-                drawLine(joints['rightHip'], joints['rightKnee']);
-            }
-            if (joints['rightKnee']['score'] > 0.8 && joints['rightAnkle']['score'] > 0.8) {
-                drawLine(joints['rightKnee'], joints['rightAnkle']);
-            }
-            if (result['score'] > 0.8) {
-                console.log(JSON.stringify([
-                    joints['centerHip']['position'].x, joints['centerHip']['position'].y,
-                    joints['leftHip']['position'].x, joints['leftHip']['position'].y,
-                    joints['leftKnee']['position'].x, joints['leftKnee']['position'].y,
-                    joints['leftAnkle']['position'].x, joints['leftAnkle']['position'].y,
-                    joints['rightHip']['position'].x, joints['rightHip']['position'].y,
-                    joints['rightKnee']['position'].x, joints['rightKnee']['position'].y,
-                    joints['rightAnkle']['position'].x, joints['rightAnkle']['position'].y,
-                    joints['spine']['position'].x, joints['spine']['position'].y,
-                    joints['centerShoulder']['position'].x, joints['centerShoulder']['position'].y,
-                    joints['nose']['position'].x, joints['nose']['position'].y,
-                    joints['leftShoulder']['position'].x, joints['leftShoulder']['position'].y,
-                    joints['leftElbow']['position'].x, joints['leftElbow']['position'].y,
-                    joints['leftWrist']['position'].x, joints['leftWrist']['position'].y,
-                    joints['rightShoulder']['position'].x, joints['rightShoulder']['position'].y,
-                    joints['rightElbow']['position'].x, joints['rightElbow']['position'].y,
-                    joints['rightWrist']['position'].x, joints['rightWrist']['position'].y,
-                ]))
-            }
-            currentAnimationId = requestAnimationFrame(drawToCanvas);
-        });
-    }
+document.querySelector('#showVideo').addEventListener('click', e => init(e));
 </script>
-</body>
-</html>
+
+
+</body></html>
