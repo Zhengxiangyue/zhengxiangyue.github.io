@@ -23,9 +23,7 @@
     </p>
     <div class="video-wrapper local">
         <video style="position: absolute" id="video" width="800px" height="500px" autoplay="" playsinline=""></video>
-    </div>
-    <div>
-        <!-- <canvas id="myCanvas" width="800px" height="500px"></canvas> -->
+        <canvas id="myCanvas" width="800px" height="500px"></canvas>
     </div>
 </div>
 
@@ -69,7 +67,7 @@
                     posenet.load().then(function (net) {
                         // posenet model loaded
                         networks = net;
-                        drawToCanvas();
+                        // drawToCanvas();
                     });
 
                 },
@@ -101,15 +99,15 @@
      * @param _from
      * @param _to
      */
-    // function drawLine(_from, _to) {
-    //     let ctx = canvasElement.getContext("2d");
-    //     ctx.beginPath();
-    //     ctx.lineWidth = 2;
-    //     ctx.strokeStyle = '#00ff00';
-    //     ctx.moveTo(_from['position'].x, _from['position'].y);
-    //     ctx.lineTo(_to['position'].x, _to['position'].y);
-    //     ctx.stroke();
-    // }
+    function drawLine(_from, _to) {
+        let ctx = canvasElement.getContext("2d");
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#00ff00';
+        ctx.moveTo(_from['position'].x, _from['position'].y);
+        ctx.lineTo(_to['position'].x, _to['position'].y);
+        ctx.stroke();
+    }
 
     function drawToCanvas() {
 
@@ -117,104 +115,104 @@
             window.cancelAnimationFrame(currentAnimationId);
             return;
         }
-        currentAnimationId = requestAnimationFrame(drawToCanvas);
 
-        // networks.estimateSinglePose(imageElement, scaleFactor, flipHorizontal, outputStride).then(function (result) {
+        networks.estimateSinglePose(imageElement, scaleFactor, flipHorizontal, outputStride).then(function (result) {
 
-            // let joints = {};
-            // for (let i = 0; i < result['keypoints'].length; ++i) {
-            //     joints[result['keypoints'][i]['part']] = result['keypoints'][i];
-            // }
+            let joints = {};
+            for (let i = 0; i < result['keypoints'].length; ++i) {
+                joints[result['keypoints'][i]['part']] = result['keypoints'][i];
+            }
 
-            // // calculate center shoulder
-            // joints['centerShoulder'] = {
-            //     score: (joints['leftShoulder']['score'] + joints['rightShoulder']['score']) * 0.5,
-            //     part: 'centerShoulder',
-            //     position: {
-            //         x: (joints['leftShoulder']['position'].x + joints['rightShoulder']['position'].x) * 0.5,
-            //         y: (joints['leftShoulder']['position'].y + joints['rightShoulder']['position'].y) * 0.5
-            //     },
-            // };
-            // joints['centerHip'] = {
-            //     score: (joints['leftHip']['score'] + joints['rightHip']['score']) * 0.5,
-            //     part: 'centerHip',
-            //     position: {
-            //         x: (joints['leftHip']['position'].x + joints['rightHip']['position'].x) * 0.5,
-            //         y: (joints['leftHip']['position'].y + joints['rightHip']['position'].y) * 0.5,
-            //     },
-            // };
-            // joints['spine'] = {
-            //     score: (joints['centerHip']['score'] + joints['centerShoulder']['score']) * 0.5,
-            //     part: 'spine',
-            //     position: {
-            //         x: (joints['centerHip']['position'].x + joints['centerShoulder']['position'].x) * 0.5,
-            //         y: (joints['centerHip']['position'].y + joints['centerShoulder']['position'].y) * 0.5,
-            //     },
-            // };
+            // calculate center shoulder
+            joints['centerShoulder'] = {
+                score: (joints['leftShoulder']['score'] + joints['rightShoulder']['score']) * 0.5,
+                part: 'centerShoulder',
+                position: {
+                    x: (joints['leftShoulder']['position'].x + joints['rightShoulder']['position'].x) * 0.5,
+                    y: (joints['leftShoulder']['position'].y + joints['rightShoulder']['position'].y) * 0.5
+                },
+            };
+            joints['centerHip'] = {
+                score: (joints['leftHip']['score'] + joints['rightHip']['score']) * 0.5,
+                part: 'centerHip',
+                position: {
+                    x: (joints['leftHip']['position'].x + joints['rightHip']['position'].x) * 0.5,
+                    y: (joints['leftHip']['position'].y + joints['rightHip']['position'].y) * 0.5,
+                },
+            };
+            joints['spine'] = {
+                score: (joints['centerHip']['score'] + joints['centerShoulder']['score']) * 0.5,
+                part: 'spine',
+                position: {
+                    x: (joints['centerHip']['position'].x + joints['centerShoulder']['position'].x) * 0.5,
+                    y: (joints['centerHip']['position'].y + joints['centerShoulder']['position'].y) * 0.5,
+                },
+            };
 
-            // let ctx = canvasElement.getContext("2d");
-            // ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            let ctx = canvasElement.getContext("2d");
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // if (joints['nose']['score'] > 0.8 && joints['centerShoulder']['score'] > 0.8) {
-            //     drawLine(joints['nose'], joints['centerShoulder']);
-            // }
-            // if (joints['centerShoulder']['score'] > 0.8 && joints['centerHip']['score'] > 0.8) {
-            //     drawLine(joints['centerShoulder'], joints['centerHip']);
-            // }
-            // if (joints['leftShoulder']['score'] > 0.8 && joints['rightShoulder']['score'] > 0.8) {
-            //     drawLine(joints['leftShoulder'], joints['rightShoulder']);
-            // }
-            // if (joints['leftShoulder']['score'] > 0.8 && joints['leftElbow']['score'] > 0.8) {
-            //     drawLine(joints['leftShoulder'], joints['leftElbow']);
-            // }
-            // if (joints['leftElbow']['score'] > 0.8 && joints['leftWrist']['score'] > 0.8) {
-            //     drawLine(joints['leftElbow'], joints['leftWrist']);
-            // }
-            // if (joints['rightShoulder']['score'] > 0.8 && joints['rightElbow']['score'] > 0.8) {
-            //     drawLine(joints['rightShoulder'], joints['rightElbow']);
-            // }
-            // if (joints['rightElbow']['score'] > 0.8 && joints['rightWrist']['score'] > 0.8) {
-            //     drawLine(joints['rightElbow'], joints['rightWrist']);
-            // }
-            // if (joints['centerHip']['score'] > 0.8 && joints['leftHip']['score'] > 0.8) {
-            //     drawLine(joints['centerHip'], joints['leftHip']);
-            // }
-            // if (joints['leftHip']['score'] > 0.8 && joints['leftKnee']['score'] > 0.8) {
-            //     drawLine(joints['leftHip'], joints['leftKnee']);
-            // }
-            // if (joints['leftKnee']['score'] > 0.8 && joints['leftAnkle']['score'] > 0.8) {
-            //     drawLine(joints['leftKnee'], joints['leftAnkle']);
-            // }
-            // if (joints['centerHip']['score'] > 0.8 && joints['rightHip']['score'] > 0.8) {
-            //     drawLine(joints['centerHip'], joints['rightHip']);
-            // }
-            // if (joints['rightHip']['score'] > 0.8 && joints['rightKnee']['score'] > 0.8) {
-            //     drawLine(joints['rightHip'], joints['rightKnee']);
-            // }
-            // if (joints['rightKnee']['score'] > 0.8 && joints['rightAnkle']['score'] > 0.8) {
-            //     drawLine(joints['rightKnee'], joints['rightAnkle']);
-            // }
-            // if (result['score'] > 0.8) {
-            //     console.log(JSON.stringify([
-            //         joints['centerHip']['position'].x, joints['centerHip']['position'].y,
-            //         joints['leftHip']['position'].x, joints['leftHip']['position'].y,
-            //         joints['leftKnee']['position'].x, joints['leftKnee']['position'].y,
-            //         joints['leftAnkle']['position'].x, joints['leftAnkle']['position'].y,
-            //         joints['rightHip']['position'].x, joints['rightHip']['position'].y,
-            //         joints['rightKnee']['position'].x, joints['rightKnee']['position'].y,
-            //         joints['rightAnkle']['position'].x, joints['rightAnkle']['position'].y,
-            //         joints['spine']['position'].x, joints['spine']['position'].y,
-            //         joints['centerShoulder']['position'].x, joints['centerShoulder']['position'].y,
-            //         joints['nose']['position'].x, joints['nose']['position'].y,
-            //         joints['leftShoulder']['position'].x, joints['leftShoulder']['position'].y,
-            //         joints['leftElbow']['position'].x, joints['leftElbow']['position'].y,
-            //         joints['leftWrist']['position'].x, joints['leftWrist']['position'].y,
-            //         joints['rightShoulder']['position'].x, joints['rightShoulder']['position'].y,
-            //         joints['rightElbow']['position'].x, joints['rightElbow']['position'].y,
-            //         joints['rightWrist']['position'].x, joints['rightWrist']['position'].y,
-            //     ]))
-            // }
-        // });
+            if (joints['nose']['score'] > 0.8 && joints['centerShoulder']['score'] > 0.8) {
+                drawLine(joints['nose'], joints['centerShoulder']);
+            }
+            if (joints['centerShoulder']['score'] > 0.8 && joints['centerHip']['score'] > 0.8) {
+                drawLine(joints['centerShoulder'], joints['centerHip']);
+            }
+            if (joints['leftShoulder']['score'] > 0.8 && joints['rightShoulder']['score'] > 0.8) {
+                drawLine(joints['leftShoulder'], joints['rightShoulder']);
+            }
+            if (joints['leftShoulder']['score'] > 0.8 && joints['leftElbow']['score'] > 0.8) {
+                drawLine(joints['leftShoulder'], joints['leftElbow']);
+            }
+            if (joints['leftElbow']['score'] > 0.8 && joints['leftWrist']['score'] > 0.8) {
+                drawLine(joints['leftElbow'], joints['leftWrist']);
+            }
+            if (joints['rightShoulder']['score'] > 0.8 && joints['rightElbow']['score'] > 0.8) {
+                drawLine(joints['rightShoulder'], joints['rightElbow']);
+            }
+            if (joints['rightElbow']['score'] > 0.8 && joints['rightWrist']['score'] > 0.8) {
+                drawLine(joints['rightElbow'], joints['rightWrist']);
+            }
+            if (joints['centerHip']['score'] > 0.8 && joints['leftHip']['score'] > 0.8) {
+                drawLine(joints['centerHip'], joints['leftHip']);
+            }
+            if (joints['leftHip']['score'] > 0.8 && joints['leftKnee']['score'] > 0.8) {
+                drawLine(joints['leftHip'], joints['leftKnee']);
+            }
+            if (joints['leftKnee']['score'] > 0.8 && joints['leftAnkle']['score'] > 0.8) {
+                drawLine(joints['leftKnee'], joints['leftAnkle']);
+            }
+            if (joints['centerHip']['score'] > 0.8 && joints['rightHip']['score'] > 0.8) {
+                drawLine(joints['centerHip'], joints['rightHip']);
+            }
+            if (joints['rightHip']['score'] > 0.8 && joints['rightKnee']['score'] > 0.8) {
+                drawLine(joints['rightHip'], joints['rightKnee']);
+            }
+            if (joints['rightKnee']['score'] > 0.8 && joints['rightAnkle']['score'] > 0.8) {
+                drawLine(joints['rightKnee'], joints['rightAnkle']);
+            }
+            if (result['score'] > 0.8) {
+                console.log(JSON.stringify([
+                    joints['centerHip']['position'].x, joints['centerHip']['position'].y,
+                    joints['leftHip']['position'].x, joints['leftHip']['position'].y,
+                    joints['leftKnee']['position'].x, joints['leftKnee']['position'].y,
+                    joints['leftAnkle']['position'].x, joints['leftAnkle']['position'].y,
+                    joints['rightHip']['position'].x, joints['rightHip']['position'].y,
+                    joints['rightKnee']['position'].x, joints['rightKnee']['position'].y,
+                    joints['rightAnkle']['position'].x, joints['rightAnkle']['position'].y,
+                    joints['spine']['position'].x, joints['spine']['position'].y,
+                    joints['centerShoulder']['position'].x, joints['centerShoulder']['position'].y,
+                    joints['nose']['position'].x, joints['nose']['position'].y,
+                    joints['leftShoulder']['position'].x, joints['leftShoulder']['position'].y,
+                    joints['leftElbow']['position'].x, joints['leftElbow']['position'].y,
+                    joints['leftWrist']['position'].x, joints['leftWrist']['position'].y,
+                    joints['rightShoulder']['position'].x, joints['rightShoulder']['position'].y,
+                    joints['rightElbow']['position'].x, joints['rightElbow']['position'].y,
+                    joints['rightWrist']['position'].x, joints['rightWrist']['position'].y,
+                ]))
+            }
+            currentAnimationId = requestAnimationFrame(drawToCanvas);
+        });
     }
 </script>
 </body>
