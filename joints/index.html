@@ -117,8 +117,9 @@
             window.cancelAnimationFrame(currentAnimationId);
             return;
         }
+        currentAnimationId = requestAnimationFrame(drawToCanvas);
 
-        networks.estimateSinglePose(imageElement, scaleFactor, flipHorizontal, outputStride).then(function (result) {
+        // networks.estimateSinglePose(imageElement, scaleFactor, flipHorizontal, outputStride).then(function (result) {
 
             // let joints = {};
             // for (let i = 0; i < result['keypoints'].length; ++i) {
@@ -213,8 +214,7 @@
             //         joints['rightWrist']['position'].x, joints['rightWrist']['position'].y,
             //     ]))
             // }
-            currentAnimationId = requestAnimationFrame(drawToCanvas);
-        });
+        // });
     }
 </script>
 </body>
