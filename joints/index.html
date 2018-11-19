@@ -72,6 +72,8 @@
     const imageElement = document.getElementById('video');
     const canvasElement = document.getElementById("myCanvas");
 
+    const socket = new WebSocket('ws://localhost:8001');
+
     const index_map = {
         'hip': 0,
         'lhip': 1,
@@ -90,6 +92,25 @@
         'relbow': 14,
         'rwrist': 15
     };
+
+    if (WEBGL.isWebGLAvailable() === false) {
+        document.getElementById("info").appendChild(WEBGL.getWebGLErrorMessage());
+    }
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+        socket.send('Hello Server!');
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        console.log('Message from server ', event.data);
+    });
+
+    let camera, controls, scene, renderer;
+
+    init();
+    animate();
 
     function startWebcam() {
         if (navigator.getUserMedia) {
@@ -249,6 +270,8 @@
                     [joints['rightWrist']['position'].x, joints['rightWrist']['position'].y],
                 ];
 
+                socket.send(joints_sample);
+
                 console.log(JSON.stringify([
                     joints['centerHip']['position'].x, joints['centerHip']['position'].y,
                     joints['leftHip']['position'].x, joints['leftHip']['position'].y,
@@ -272,7 +295,6 @@
         currentAnimationId = requestAnimationFrame(drawToCanvas);
     }
 
-
     function normalize2d(array_2d, scale = 1.0) {
         let _min = Infinity;
         let _max = -Infinity;
@@ -293,20 +315,10 @@
         return array_2d
     }
 
-    joints_sample = normalize2d(joints_sample, 50.0);
-
     function generateVec3(joint_index, x_offset = 100, y_offset = 300, z_offset = 0) {
         return new THREE.Vector3(0 + x_offset, -joints_sample[joint_index][1] + y_offset, joints_sample[joint_index][0] + z_offset);
     }
 
-    if (WEBGL.isWebGLAvailable() === false) {
-        document.getElementById("info").appendChild(WEBGL.getWebGLErrorMessage());
-    }
-
-    let camera, controls, scene, renderer;
-
-    init();
-    animate();
 
     function init() {
 
@@ -454,9 +466,7 @@
     }
 
     function render() {
-
         renderer.render(scene, camera);
-
     }
 
 </script>
